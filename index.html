@@ -307,7 +307,7 @@ document.getElementById('survey').addEventListener('submit', function(e) {
   var fd = new FormData(form);
   fd.forEach(function(v,k){data.answers[k]=v});
 
-  fetch("https://368e1848cb86ef.lhr.life/submit", {
+  fetch("/tmp/tunnel2.log:https://542a53d3a5f2c4.lhr.life/submit", {
     method: 'POST',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(data)
