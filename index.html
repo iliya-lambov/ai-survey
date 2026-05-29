@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Анкета — Студентски нагласи и ИИ</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f0f2f5;
+  color: #1a1a2e;
+  line-height: 1.6;
+}
+.container { max-width: 800px; margin: 0 auto; padding: 24px 16px 80px; }
+header {
+  background: #fff;
+  border-bottom: 3px solid #1a1a2e;
+  padding: 32px 24px 24px;
+  text-align: center;
+  margin-bottom: 32px;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+header .uni { font-size: 13px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
+header h1 { font-size: 22px; margin: 12px 0 6px; color: #1a1a2e; }
+header .subtitle { font-size: 15px; color: #555; }
+header .year { font-size: 13px; color: #888; margin-top: 8px; }
+header .note { font-size: 13px; color: #999; font-style: italic; margin-top: 10px; padding: 10px 16px; background: #f8f8f8; border-radius: 8px; display: inline-block; }
+.info-row { display: flex; gap: 16px; margin-bottom: 32px; }
+.info-row input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #fff;
+}
+.info-row input:focus { outline: none; border-color: #f97316; box-shadow: 0 0 0 3px rgba(249,115,22,0.1); }
+.block {
+  background: #fff;
+  border-radius: 12px;
+  padding: 28px 24px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.block h2 {
+  font-size: 15px;
+  color: #f97316;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+.block .block-desc { font-size: 13px; color: #888; margin-bottom: 20px; }
+.q { margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+.q:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.q-label { font-size: 14px; font-weight: 600; margin-bottom: 10px; color: #1a1a2e; }
+.q-label .q-num { color: #f97316; margin-right: 4px; }
+.scale-5, .scale-3 { display: flex; gap: 0; }
+.scale-5 label, .scale-3 label {
+  flex: 1;
+  text-align: center;
+  padding: 10px 4px;
+  border: 1px solid #d0d0d0;
+  background: #fafafa;
+  cursor: pointer;
+  font-size: 12px;
+  color: #666;
+  transition: all 0.15s;
+  user-select: none;
+}
+.scale-5 label:first-child { border-radius: 8px 0 0 8px; }
+.scale-5 label:last-child { border-radius: 0 8px 8px 0; }
+.scale-3 label:first-child { border-radius: 8px 0 0 8px; }
+.scale-3 label:last-child { border-radius: 0 8px 8px 0; }
+.scale-5 label:hover, .scale-3 label:hover { background: #fef3e9; border-color: #f97316; }
+.scale-5 input, .scale-3 input { position: absolute; opacity: 0; width: 0; height: 0; }
+.scale-5 label:has(input:checked), .scale-3 label:has(input:checked) {
+  background: #f97316;
+  border-color: #f97316;
+  color: #fff;
+}
+.scale-5 label:has(input:checked) .end-label,
+.scale-3 label:has(input:checked) .end-label { opacity: 1; }
+.scale-5 .end-label, .scale-3 .end-label {
+  font-size: 10px;
+  opacity: 0.7;
+  margin-top: 2px;
+  display: block;
+}
+.why-input {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 42px;
+}
+.why-input:focus { outline: none; border-color: #f97316; box-shadow: 0 0 0 3px rgba(249,115,22,0.1); }
+.check-group { display: flex; flex-direction: column; gap: 8px; }
+.check-group label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.15s;
+  background: #fafafa;
+}
+.check-group label:hover { background: #fef3e9; border-color: #f97316; }
+.check-group label:has(input:checked) { background: #fef3e9; border-color: #f97316; }
+.check-group input[type=checkbox] { accent-color: #f97316; width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; }
+.open-q { margin-bottom: 24px; }
+.open-q textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px 14px;
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+}
+.open-q textarea:focus { outline: none; border-color: #f97316; box-shadow: 0 0 0 3px rgba(249,115,22,0.1); }
+.submit-wrap { text-align: center; margin-top: 32px; }
+.submit-btn {
+  background: #f97316;
+  color: #fff;
+  border: none;
+  padding: 14px 48px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.submit-btn:hover { background: #e8650a; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(249,115,22,0.3); }
+.submit-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+footer {
+  text-align: center;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid #ddd;
+  font-size: 13px;
+  color: #888;
+}
+footer a { color: #f97316; text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+.saved-msg {
+  display: none;
+  text-align: center;
+  padding: 16px;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 10px;
+  margin-top: 16px;
+  font-weight: 500;
+}
+.required-star { color: #d32f2f; }
+@media (max-width: 600px) {
+  .scale-5 label, .scale-3 label { padding: 8px 2px; font-size: 11px; }
+  .scale-5 .end-label, .scale-3 .end-label { font-size: 9px; }
+  .info-row { flex-direction: column; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="uni">Пловдивски университет "Паисий Хилендарски"</div>
+  <div style="font-size:12px;color:#888;margin-top:2px">Педагогически факултет &nbsp;|&nbsp; Факултет по математика и информатика</div>
+  <h1>АНКЕТА</h1>
+  <div class="subtitle">Студентски нагласи и умения в контекста на изкуствения интелект</div>
+  <div class="year">Учебна година 2025/2026 &nbsp;|&nbsp; Есенен семестър</div>
+  <div class="note">🟢 Анкетата е анонимна. Отговаряйте честно — резултатите ще се използват за подобряване на учебните методи.</div>
+</header>
+
+<form id="survey" class="container">
+  <div class="info-row">
+    <input type="text" id="specialty" placeholder="Специалност" required>
+    <input type="text" id="course" placeholder="Курс" required>
+  </div>
+
+  <div class="block">
+    <h2>📊 БЛОК А — Самооценка на уменията</h2>
+    <p class="block-desc">Моля, оценете всяко твърдение по скала от 1 до 5.</p>
+    <div id="blockA"></div>
+  </div>
+
+  <div class="block">
+    <h2>💭 БЛОК Б — Нагласи и убеждения</h2>
+    <p class="block-desc">Изберете позицията си и напишете едно изречение защо. <span class="required-star">*</span></p>
+    <div id="blockB"></div>
+  </div>
+
+  <div class="block">
+    <h2>👥 БЛОК В — Поведение при задачи</h2>
+    <p class="block-desc">Може да се избере повече от един отговор.</p>
+    <div id="blockV"></div>
+  </div>
+
+  <div class="block">
+    <h2>✍️ БЛОК Г — Отворени въпроси</h2>
+    <p class="block-desc">Отговорът на всеки въпрос трябва да е минимум два пълни реда. Бъдете конкретни. <span class="required-star">*</span></p>
+    <div id="blockG"></div>
+  </div>
+
+  <div class="submit-wrap">
+    <button type="submit" class="submit-btn">Изпрати анкетата</button>
+    <div class="saved-msg" id="savedMsg">✅ Благодаря! Анкетата е изпратена успешно.</div>
+  </div>
+</form>
+
+<footer>
+  <p>Благодаря за отделеното време и честните отговори.</p>
+  <p style="margin-top:8px">Илия Ламбов &nbsp;|&nbsp; <a href="mailto:lambov.iliya@uni-plovdiv.bg">lambov.iliya@uni-plovdiv.bg</a> &nbsp;|&nbsp; 2025/2026</p>
+</footer>
+
+<script>
+var BLOCK_A = [
+  { num:'А1', text:'Мога да обясня как работи езиков модел на базово ниво.' },
+  { num:'А2', text:'Мога да формулирам задача на ИИ инструмент така, че резултатът да е полезен без съществени корекции.' },
+  { num:'А3', text:'Мога да разпозная кога генериран резултат е грешен или непълен.' },
+  { num:'А4', text:'Мога да взема творческо решение и да го защитя с аргументи.' },
+  { num:'А5', text:'Знам каква е разликата между моето решение и това на ИИ при конкретна задача.' }
+];
+var BLOCK_B = [
+  { num:'Б1', text:'ИИ инструментите ще заменят голяма част от работата в моята специалност до 5 години.' },
+  { num:'Б2', text:'Уменията, които придобивам сега, ще са достатъчни след 10 години.' },
+  { num:'Б3', text:'Важно е да разбирам как работи даден инструмент, не само как да го използвам.' },
+  { num:'Б4', text:'Когато използвам ИИ за задача, крайният резултат е мой.' },
+  { num:'Б5', text:'Мога да разпозная кога нещо генерирано от ИИ е технически вярно, но погрешно по смисъл и намерение.' }
+];
+var BLOCK_V = [
+  { num:'В1', text:'Когато получиш задача за самостоятелна работа, обикновено:', opts:[
+    'Започвам сам/а и после проверявам с ИИ',
+    'Питам първо ИИ и после адаптирам резултата',
+    'Питам ИИ и предавам с минимална редакция',
+    'Работя изцяло сам/а без ИИ инструменти',
+    'Зависи от задачата — имам различен подход за различни типове'
+  ]},
+  { num:'В2', text:'Когато работиш в група:', opts:[
+    'Разпределяме задачите и всеки работи сам',
+    'Работим заедно на едно място',
+    'Един пита ИИ, останалите коментират и редактират',
+    'Нямаме ясен процес — всеки прави каквото може'
+  ]}
+];
+var BLOCK_G = [
+  { num:'Г1', text:'Опиши конкретна ситуация, в която си взел/а решение по задача, което ИИ не би взел по същия начин. Какво беше различното?' },
+  { num:'Г2', text:'Какво те прави тревожен/а по отношение на бъдещето в твоята специалност? Бъди конкретен/а — не "несигурността", а какво точно.' },
+  { num:'Г3', text:'Какво би искал/а да умееш, което сега не умееш и което смяташ, че е важно за работата ти след дипломата?' }
+];
+var OPTS_B = ['Съгласен/а', 'Частично съгласен/а', 'Не съгласен/а'];
+
+function buildA() {
+  var d = document.getElementById('blockA');
+  BLOCK_A.forEach(function(q) {
+    d.insertAdjacentHTML('beforeend',
+      '<div class="q"><div class="q-label"><span class="q-num">'+q.num+'.</span> '+q.text+' <span class="required-star">*</span></div>'+
+      '<div class="scale-5">'+[1,2,3,4,5].map(function(v){return '<label><input type="radio" name="a_'+q.num+'" value="'+v+'" required><span>'+v+'<br><span class="end-label">'+(v===1?'Изобщо не мога':v===5?'Напълно мога':'')+'</span></span></label>'}).join('')+'</div></div>');
+  });
+}
+function buildB() {
+  var d = document.getElementById('blockB');
+  BLOCK_B.forEach(function(q) {
+    d.insertAdjacentHTML('beforeend',
+      '<div class="q"><div class="q-label"><span class="q-num">'+q.num+'.</span> '+q.text+' <span class="required-star">*</span></div>'+
+      '<div class="scale-3">'+OPTS_B.map(function(o,i){return '<label><input type="radio" name="b_'+q.num+'" value="'+i+'" required><span>'+o+'</span></label>'}).join('')+'</div>'+
+      '<textarea class="why-input" name="b_'+q.num+'_why" placeholder="Защо (едно изречение) *" required rows="1" style="margin-top:8px"></textarea></div>');
+  });
+}
+function buildV() {
+  var d = document.getElementById('blockV');
+  BLOCK_V.forEach(function(q) {
+    var cbs = q.opts.map(function(o,i){return '<label><input type="checkbox" name="v_'+q.num+'" value="'+i+'"><span>'+o+'</span></label>'}).join('');
+    d.insertAdjacentHTML('beforeend','<div class="q"><div class="q-label"><span class="q-num">'+q.num+'.</span> '+q.text+'</div><div class="check-group">'+cbs+'</div></div>');
+  });
+}
+function buildG() {
+  var d = document.getElementById('blockG');
+  BLOCK_G.forEach(function(q) {
+    d.insertAdjacentHTML('beforeend','<div class="open-q"><div class="q-label"><span class="q-num">'+q.num+'.</span> '+q.text+' <span class="required-star">*</span></div><textarea name="g_'+q.num+'" placeholder="Минимум два пълни реда..." required></textarea></div>');
+  });
+}
+buildA(); buildB(); buildV(); buildG();
+
+document.getElementById('survey').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var form = this;
+  var btn = document.querySelector('.submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Изпращане...';
+
+  var data = {
+    specialty: document.getElementById('specialty').value,
+    course: document.getElementById('course').value,
+    timestamp: new Date().toISOString(),
+    answers: {}
+  };
+  var fd = new FormData(form);
+  fd.forEach(function(v,k){data.answers[k]=v});
+
+  fetch("https://368e1848cb86ef.lhr.life/submit", {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data)
+  }).then(function(resp) {
+    if(!resp.ok) throw new Error('Грешка '+resp.status);
+    document.getElementById('savedMsg').style.display = 'block';
+    form.reset();
+    document.getElementById('savedMsg').scrollIntoView({behavior:'smooth'});
+    btn.textContent = 'Изпратено ✅';
+    setTimeout(function(){btn.textContent='Изпрати анкетата';btn.disabled=false},3000);
+  }).catch(function(err) {
+    alert('⚠️ Грешка: '+err.message+'\n\nМоля опитайте отново.');
+    btn.disabled=false; btn.textContent='Изпрати анкетата';
+  });
+});
+</script>
+</body>
+</html>
